@@ -1,27 +1,25 @@
-import logo from './logo.svg';
-import { Message } from './Message'
+import { Counter, Component } from './Component';
+import { Counter, Autofocus } from './Autofocus';
+import { MenuList } from '@material-ui/core';
 import './App.css';
 
-function App() {
+function App({ name }) {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Message />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>Hello React</p>
+        <Component />
       </header>
     </div>
   );
 }
-
 export default App;
+
+const arr = [1, 2];
+const obj = {
+  a: 3
+};
+
+const { a } = obj;
+
+const [one, two, three] = arr;
