@@ -1,5 +1,5 @@
-import { Counter, Component } from './Component';
-import { Counter, Autofocus } from './Autofocus';
+import { router } from "./Components/router";
+import { profile } from "./Components/profile";
 import { MenuList } from '@material-ui/core';
 import './App.css';
 
@@ -8,7 +8,8 @@ function App({ name }) {
     <div className="App">
       <header className="App-header">
         <p>Hello React</p>
-        <Component />
+        <router />
+        <profile />
       </header>
     </div>
   );
