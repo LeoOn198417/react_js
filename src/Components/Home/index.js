@@ -1,6 +1,7 @@
 import "./Home.css";
 import { useEffect, useState, useCallback } from "react";
 import { MessageList } from "../MessageList";
+import { Form } from "../Form";
 import { AUTHORS } from "../../constants";
 import { ChatList } from "../ChatList";
 import { useParams } from "react-router-dom";

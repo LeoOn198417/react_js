@@ -1,26 +1,13 @@
-import { router } from "./Components/router";
-import { profile } from "./Components/profile";
-import { MenuList } from '@material-ui/core';
-import './App.css';
+import { Provider } from "react-redux";
+import { Router } from "./Components/router";
+import { store } from "./store";
 
-function App({ name }) {
+function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>Hello React</p>
-        <router />
-        <profile />
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router />
+    </Provider>
   );
 }
+
 export default App;
-
-const arr = [1, 2];
-const obj = {
-  a: 3
-};
-
-const { a } = obj;
-
-const [one, two, three] = arr;
