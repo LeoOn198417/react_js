@@ -6,39 +6,43 @@ import { useSelector, useDispatch } from "react-redux";
 import { MessageList } from "../MessageList";
 import { Form } from "../Form";
 import { ChatList } from "../ChatList";
-import { sendMessageWithReply, sendMessage, deleteChat } from "../../store/chats/actions";
 import { selectName } from "../../store/profile/selectors";
+import { selectChats } from "../../store/chats/selectors";
+import { selectMessages } from "../../store/messages/selectors";
+import {
+    connectChatsToFB,
+} from "../../store/chats/actions";
+import {
+    connectMessagesToFB,
+    sendMessageWithFB,
+} from "../../store/messages/actions";
 
 function Home() {
     const { chatId } = useParams();
-    const history = useHistory();
 
-    const chats = useSelector(state => state.chats);
-    const name = useSelector(selectName);
     const dispatch = useDispatch();
+    const chats = useSelector(selectChats);
+    const messages = useSelector(selectMessages);
+    const name = useSelector(selectName);
+
+    useEffect(() => {
+        dispatch(connectChatsToFB());
+        dispatch(connectMessagesToFB());
+    }, []);
 
     const handleSendMessage = useCallback(
         (newMessage) => {
-            dispatch(sendMessage(chatId, { ...newMessage, author: name }));
+            dispatch(sendMessageWithFB(chatId, { ...newMessage, author: name }));
         },
-        [chatId]
+        [chatId, name, dispatch]
     );
-
-    const handleDeleteChat = useCallback((id) => {
-        dispatch(deleteChat(id));
-    }, []);
-
-    if (!!chatId && !chats[chatId]) {
-        // return <Redirect to="/nochat" />
-        history.replace('/nochat');
-    }
 
     return (
         <div className="root">
-            <ChatList chats={chats} onDeleteChat={handleDeleteChat} />
-            {!!chatId && chats[chatId] && (
+            <ChatList chats={chats} />
+            {!!chatId && (
                 <div>
-                    <MessageList messages={chats[chatId].messages} />
+                    <MessageList messages={messages[chatId] || []} />
                     <Form onSendMessage={handleSendMessage} />
                 </div>
             )}
