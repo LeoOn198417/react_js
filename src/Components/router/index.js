@@ -1,69 +1,69 @@
-import React, { useState } from "react";
-import { BrowserRouter, Link, Switch, Route } from 'react-router-dom';
-import { Profile } from '../Profile';
-import Home from '../Home';
-import { ThemeContext } from "../../utils/ThemeContext";
+import React, { useEffect } from "react";
+import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import Profile from "../Profile";
+import Home from "../Home";
+import { News } from "../News";
+import { PrivateRoute } from "../../hocs/PrivateRoute";
+import { PublicRoute } from "../../hocs/PublicRoute";
+import { Login } from "../Login";
+import { connectProfileToFB } from "../../store/profile/actions";
+import { Logout } from "../Logout";
 
 export const Router = () => {
-    const [bgColor, setBgColor] = useState("white");
-    const changeColor = () => {
-        setBgColor((prevColor) => (prevColor === "white" ? "gray" : "white"));
-    };
-    return (
-        <ThemeContext.Provider value={{ theme: bgColor, changeTheme: changeColor }}>
-            <BrowserRouter>
-                <ul>
-                    <li style={{ backgroundColor: bgColor }}>
-                        <Link to="/home">HOME</Link>
-                    </li>
-                    <li style={{ backgroundColor: bgColor }}>
-                        <Link to="/profile">PROFILE</Link>
-                    </li>
-                </ul>
+    const dispatch = useDispatch();
 
-                <Switch>
-                    <Route
-                        path="/profile"
-                        render={(data) => (
-                            <Profile match={data.match} history={data.history} />
-                        )}
-                    ></Route>
-                    <Route path="/home/:chatId?">
-                        <Home />
-                    </Route>
-                    <Route path="/nochat">
-                        <div> No such chat</div>
-                        <Link to="/home">HOME</Link>
-                    </Route>
-                    <Route path="/" exact>
-                        <h2>WELCOME</h2>
-                    </Route>
-                    <Route path="*">
-                        <h2>404</h2>
-                    </Route>
-                </Switch>
-            </BrowserRouter>
-        </ThemeContext.Provider>
+    useEffect(() => {
+        dispatch(connectProfileToFB());
+    }, []);
+
+    return (
+        <BrowserRouter>
+            <ul>
+                <li>
+                    <Link to="/home">HOME</Link>
+                </li>
+                <li>
+                    <Link to="/profile">PROFILE</Link>
+                </li>
+                <li>
+                    <Link to="/news">NEWS</Link>
+                </li>
+            </ul>
+
+            <Logout />
+
+            <Switch>
+                <PrivateRoute
+                    path="/profile"
+                    render={(data) => (
+                        <Profile match={data.match} history={data.history} />
+                    )}
+                />
+                <PrivateRoute path="/home/:chatId?">
+                    <Home />
+                </PrivateRoute>
+                <PublicRoute path="/news">
+                    <News />
+                </PublicRoute>
+                <PrivateRoute path="/nochat">
+                    <div> No such chat</div>
+                    <Link to="/home">HOME</Link>
+                </PrivateRoute>
+                <Route path="/" exact>
+                    <h2>WELCOME</h2>
+                </Route>
+                <PublicRoute path="/login" exact>
+                    <Login />
+                </PublicRoute>
+                <PublicRoute path="/signup" exact>
+                    <Login isSignUp />
+                </PublicRoute>
+                <Route path="*">
+                    <h2>404</h2>
+                </Route>
+            </Switch>
+        </BrowserRouter>
     );
 };
-
-const add = (a, b) => {
-    return a + b;
-};
-
-const subtr = (a, b) => {
-    return a - b;
-};
-
-const makeLogger = (fn) => {
-    return (...args) => {
-        console.log(args);
-        fn(args);
-    };
-};
-
-const subWithLogger = makeLogger(subtr);
-const addWithLogger = makeLogger(add);
-
-addWithLogger(1, 2, 4);
-subWithLogger(10, 1, 0);
